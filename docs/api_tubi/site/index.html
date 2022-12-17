@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Download EXCEL table to DB</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/> 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<script tipe="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js">     
+</script>
+</head>
+<body>
+    <div class="container">
+        <!--<h4 class="text-center mt-4 mb-4">Загрузка EXCEL(input_product) таблицы в Базу Данных</h4>-->
+
+        <form method="POST" name="sample">
+
+            <input type="hidden" name="list_str" id="list_str">
+       
+            <div class="card">
+                <div class="card-header"><b>Выберите Excel файл (t_input_product / `catalog`)</b></div>
+
+                <p class="text-center">Ответ о выполнении</p>
+
+                <textarea id="php_ansver" cols="30" rows="2"></textarea>
+
+                <div class="card-body">
+                    
+                   
+                    <input type="file" id="excel_file" />    
+                    
+                     <!--ищем ключ \sendMail\ в подключенных файлах-->
+                     <button type="button" id="sendMail" class="btn btn-success" >Отправить</button>
+
+                    
+                </div>
+            </div>
+            <div id="excel_data" class="mt-5"></div>
+
+        </form>
+    </div>
+    <!--подключаем jquery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!--подключаем файл-->
+    <script src="config.js"></script>
+    <script src="formMail.js"></script>
+</body>
+</html>
+
+<script>
+
+    //console.log("log test : \n");
+
+    const excel_file = document.getElementById('excel_file');
+
+    excel_file.addEventListener('change', (event) =>{
+
+        var reader = new FileReader();
+
+        reader.readAsArrayBuffer(event.target.files[0]);
+
+        reader.onload = function(event){
+
+            var data = new Uint8Array(reader.result);
+
+            var work_book = XLSX.read(data, {type:'array'});
+
+            var sheet_name = work_book.SheetNames;
+
+            var sheet_data = XLSX.utils.sheet_to_json(work_book.Sheets[sheet_name[0]], {header:1});
+
+            var rollno = new Array();
+            var name = new Array();
+
+            if(sheet_data.length > 0)
+            {
+                let arr = [];
+
+                var table_output = '<table class="table table-striped table-border">';
+
+                    for(var row = 0; row < sheet_data.length; row++)
+                    {
+
+                        let arr_str = [];
+                        
+                        table_output += '<tr>';
+
+                        for(var cell = 0; cell < sheet_data[row].length; cell++)
+                        {
+
+                            table_output += '<td>' +sheet_data[row][cell]+ '</td>';
+
+                            //заполним строку таблицы в массив
+                            arr_str[cell] = sheet_data[row][cell];
+
+                        }
+
+                        table_output += '</tr>';
+
+                        //внесем массив строки в массив таблица
+                        arr[row] = arr_str;
+
+                    }
+
+                table_output += '</table>';
+
+                document.getElementById('excel_data').innerHTML = table_output;
+
+                //конвертируем в JSON
+                var jsonString = JSON.stringify(arr);
+
+                //поместим строку в переменную html
+                document.getElementById('list_str').value = jsonString;
+
+                //var elem = document.getElementById('list_str').value;
+
+                //console.log("list elem : ", elem);
+
+            }
+
+
+        }
+
+    })
+</script>

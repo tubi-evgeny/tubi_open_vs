@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .no-js {
+             display: none;
+             }
+    </style>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.5/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.5/vfs_fonts.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<script tipe="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+
+<body>
+    <div class="container">
+        <h4 class="text-center mt-1 mb-1">Документы по заказам</h4>
+        
+        <form method="POST" name="sample">
+            <p id="counterparty_info"></p>
+            <div class="card">
+                <div class="card-header"><b>Выберите документ для просмотра</b>                   
+                   
+                    <button type="button" id="provider" style="background:rgb(216, 214, 214)" >Поставщик</button>
+                    <button type="button" id="partner" style="background:rgb(216, 214, 214)" >Партнер</button>
+                    <button type="button" id="exit" style="background:rgb(216, 214, 214)" class="ml-5" >Выход</button>
+                </div>
+                <div id="PDF_buttons" class="card-body no-js"> 
+                    <button type="button" id="orders" >Список заказов</button>
+                    <button type="button" id="invoices">Расходные Накладные</button>
+                    <button type="button" id="openPDF" >Печать PDF</button>                    
+                </div>
+            </div>
+            <h5 id="doc_name" class="text-center fw-bold mt-1"></h5>
+            
+
+            <div id="excel_data" class="mt-1"></div>
+
+        </form>
+    </div>
+    <!--подключаем jquery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!--подключаем файл-->
+    <script src="partner_PDF_copy.js?version={2}"></script>
+    
+</body>
+</html>

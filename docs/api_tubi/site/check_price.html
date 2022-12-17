@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="windows-1251">
+<title>Download EXCEL table to DB</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/> 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<script tipe="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js">     
+</script>
+<style>
+   .container div {
+    float: left;
+    margin-bottom: 5px;
+    }
+    .col-1-1 {
+    width: 100%;  
+    }
+    .col-1-2 {
+    width: 50%;  
+    }
+    .col-1-3 {
+    width: 33.3333333333%;
+    }
+    .col-1-4 {
+    width: 25%;
+    }
+    .col-2-3 {
+    width: 66.6666666667%;
+    }
+    .test{
+        height:35px;
+        width:200px;
+    }
+    .h35w200{
+        height:30px;
+        width:200px;
+    }
+    .h30w100{
+        height:30px;
+        width:100px;
+    }
+</style>
+</head>
+<body>
+    <div class="main">
+        <form method="POST" name="sample">
+            <!--таблица EXCEL сохранена в строке-->
+            <input type="hidden" name="start_list_str" id="start_list_str">
+            <input type="hidden" name="list_str" id="list_str">
+            <!--таблица EXCEL очищена от лишнего и сохранена в строке-->
+            <input type="hidden" name="list_for_table_str" id="list_for_table_str">
+            <!--колличество столбцов в таблице-->
+            <input type="hidden" name="td_arr" id="td_arr">
+            <!--колличество столбцов в таблице и значения-->
+            <input type="hidden" name="td_info_arr" id="td_info_arr">
+            <!--какая кнопка выбранна
+            <input type="hidden" name="radio_button" id="radio_button">-->
+        </form>
+    <div class="container">
+        <div class="col-1-1 " >
+            <h4 class="text-center mt-4 mb-4">Загрузка EXCEL таблицы в Базу Данных check_price.html</h4>
+            <div class="col-1-1  card">
+                <div class="container">
+                    <div class="col-1-1 card-header"><b>Выберите Excel файл</b></div>
+                    <div class="col-1-1 " >
+                        <p class="text-center">Ответ о выполнении</p>
+                        <textarea class="col-1-1" id="php_ansver" cols="30" rows="2"></textarea>
+                    </div>
+                    <div class="col-2-3 " >
+                        <input style="height:35px;width:600px" type="file" id="excel_file" />    <br>   
+                        <form id="rates">                                                       
+                            Укажите таблицу:</input>
+                            <input id="btn_radio1" name="rate" type="radio" value="v1">Цены</input>
+                            <input id="btn_radio2" name="rate" type="radio" value="v2">Запасы</input> <br><p></p>
+                            
+                        </form>
+                        <form id="rates2">                                                       
+                            Сделайте выбор:</input><br>
+                            <input id="rb_to_tabe" name="rate2" type="radio" value="rb1">В соответствии с таблицей</input>
+                            <br>
+                            <input id="rb_work_full" name="rate2" type="radio" value="rb2">Сделать запасы по 10 упаковок</input>
+                            <br>
+                            <input id="rb_work_null" name="rate2" type="radio" value="rb3">Сделать запасы = 0</input> 
+                            <br><p></p>
+                            
+                        </form>
+                        <input class="h35w200" type="button" id="getCounterparty" value="Выбрать компанию">
+                        <input type="height:30px;width:400px" id="counterparty_name" placeholder="Ваша компания"><br> <br>  
+
+                        <input class="h35w200" type="button" id="getWarehouse" value="Выбрать склад">
+                        <input type="h35w200 " id="warehouse_info" placeholder="Ваш склад">
+
+                        <div id="db_data" class="mt-0 d-inline-block"></div><br><br>
+
+                        Удалить строк сверху <input id="deleteStrCount"type="number"name="deleteStrCount"style="height:30px;width:80px">
+                        <button class="h30w100" type="button" id="deletsString" >Delete</button>   
+                        <p></p>    
+                        <button id="createNewTable"type="button"style="height:35px;weight:450px;">Подготовить таблицу для загрузки в БД</button> 
+                        <br><p></p>
+                        <!--ищем ключ \sendMail\ в подключенных файлах-->
+                        <button class="h35w200" type="button" id="sendFile" >Отправить</button> 
+                    </div>
+                    <div class="col-1-3 card">
+                        <p id="general_ info"> information general</p>
+
+                    </div>
+                    
+                    <div class="col-1-1 card-header" id="list_name" value="Список" ><b>Список товаров</b></div><!---->
+                    
+                    
+                </div>
+            </div>
+        </div>
+        <div id="excel_data" class="mt-2"></div>  
+
+        <datalist id="columnName">
+            <option value="Наим. товара"></option>
+            <option value="Цена единицы"></option>
+            <option value="Цена упаковки"></option>
+            <option value="Количество"></option>
+            <option value="Учет(уп/шт)"></option>
+            <option value="Штрихкод/Артикул"></option>
+        </datalist>
+    </div>
+    </div>
+    <!--подключаем jquery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!--подключаем файл-->
+    <script src="fromCheck.js?version={6}"></script>
+    <!--<script src="fromCheck.js"></script>-->
+</body>
+</html>
+
+<script>  
+
+    //console.log("log test : \n");
+
+  /*  const excel_file = document.getElementById('excel_file');
+
+    excel_file.addEventListener('change', (event) =>{
+
+        var reader = new FileReader();
+
+        reader.readAsArrayBuffer(event.target.files[0]);
+
+        reader.onload = function(event){
+
+            var data = new Uint8Array(reader.result);
+
+            var work_book = XLSX.read(data, {type:'array'});
+
+            var sheet_name = work_book.SheetNames;
+
+            var sheet_data = XLSX.utils.sheet_to_json(work_book.Sheets[sheet_name[0]], {header:1});
+
+            //var rollno = new Array();
+            //var name = new Array();
+
+            if(sheet_data.length > 0)
+            {
+                let firstFlag = true;
+                let empty = "hi";
+                
+                let arr = [];
+                let td_arr = [];
+
+                var table_output = '<table class="table table-striped table-border">';
+
+                    //сделаем первую строку пустой
+                    if(firstFlag){
+                        for(var row = 0; row < sheet_data.length; row++)
+                        {                        
+                            
+                            table_output += '<tr>';
+
+                            for(var cell = 0; cell < sheet_data[row].length; cell++)
+                            {
+                                let tdCell = "td"+cell;
+                                table_output += '<td>' +'<input list="columnName" id="'+tdCell+'" type="text" name="model" placeholder="Введите имя столбца" />'+ '</td>';
+                                //table_output += '<td>' +empty+ '</td>';
+
+                                //колличество столбцов
+                                td_arr[cell] = tdCell;
+                            }
+                            table_output += '</tr>';                       
+                            firstFlag = false;
+                            break;
+                        }
+                    }
+
+                    for(var row = 0; row < sheet_data.length; row++)
+                    {
+
+                        let arr_str = [];
+                        
+                        table_output += '<tr>';
+
+                        for(var cell = 0; cell < sheet_data[row].length; cell++)
+                        {
+
+                            table_output += '<td>' +sheet_data[row][cell]+ '</td>';
+
+                            //заполним строку таблицы в массив
+                            arr_str[cell] = sheet_data[row][cell];
+
+                        }
+
+                        table_output += '</tr>';
+
+                        //внесем массив строки в массив таблица
+                        arr[row] = arr_str;
+
+                    }
+
+                table_output += '</table>';
+
+                document.getElementById('excel_data').innerHTML = table_output;
+
+                //конвертируем в JSON
+                var jsonString = JSON.stringify(arr);
+                //поместим строку в переменную html
+                document.getElementById('list_str').value = jsonString;
+
+                //конвертируем в JSON
+                var td_arr_json_str = JSON.stringify(td_arr);
+                //поместим строку в переменную html
+                document.getElementById('td_arr').value = td_arr_json_str;
+
+            }
+
+
+        }
+
+    })*/
+</script>

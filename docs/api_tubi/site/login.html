@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<body>
+    <div class="container">
+        <div>
+            <h4 class=" mt-4 mb-4">tubilite.ru</h4>
+            <h1>Вход:</h1>
+            <h5>Для зарегестрированных пользователей</h5>
+            <form action="" method="post" name="loginf">
+                <p><label>Телефон:<br>
+                <input id="phone_number" name="phone_number" size="25" type="number"></label></p>
+                <p><label>Пароль:<br>
+                <input id="password"name="password" size="25" type="password"></label></p> 
+                <p><button type="button" id="check_user" >Отправить</button></p>
+                <!--<p><input id="check_user" name="login" type= "button">Отправить</p>
+                <p>Еще не зарегистрированы, то </br><a href= "reg.php">зарегистрируйтесь</a>!</p>-->
+                <p><button type="button" id="go_next" >Перейти</button></p>
+            </form>
+        </div>
+    </div>
+    <!--подключаем jquery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!--подключаем файл-->
+    <script src="login1.js?version={2}"></script>
+</body>
+</html>
